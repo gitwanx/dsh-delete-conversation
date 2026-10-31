@@ -1,5 +1,47 @@
 # dsh-delete-conversation
 
+## 这是什么 / 谁在用 / 怎么开始
+
+给侧栏会话行的 `...` 菜单加一行「删除对话…」：确认后把会话目录挪进 `sessions.trash`，刷新侧栏那行就没了。
+谁在用：本机 DSH 桌面版（Web 侧栏）的使用者。
+怎么开始：装好插件 → 会话行 `...` → 删除对话… → 确认 → 刷新侧栏。
+
+## 安装
+
+```bat
+dsh plugin --profile desktop add "<此插件目录绝对路径>"
+```
+
+装完自动进 profile bundles、HMR 生效；客户端那半边刷新页面或点 Unlag 生效。
+不要再手工往 profile `cordis.patch.yml` 加 `insert` 行——手工行 + bundle 两层插同一个 id 会重复。
+
+## 怎么用
+
+1. 侧栏会话行 `...` 菜单点「删除对话…」。
+2. 弹窗给出会话标题与丢失边界，确认。
+3. Host 走 `POST /dsh-delete-conversation/delete`，把 `<session-root>/--<project>--/<id>/` 挪到 `<session-root>.trash/<stamp>-<id>/`（默认 `~/.dsh/sessions.trash/`）。
+4. **删除后会话进 `sessions.trash`，可恢复**——把该目录挪回原项目目录即还原；**要刷新侧栏**（页面会自刷新，没刷到就手动刷新或点 Unlag）那行才消失。
+
+## 配置
+
+无配置项。边界写死在 Host 半边：只收 `POST`、要求 `x-dsh-delete-conversation: 1` 头 + loopback `Origin`；`?sessionId=<id>&dryRun=1` 只算路径不动文件。
+
+## 已知限制 / 不在这里放什么
+
+- 仍在本 Host 进程里 live 的会话拒绝删（`409 session-live`）：换会话或重启应用再删。
+- 正在看的那个会话不能删（否则页面会刷进一个已不存在的会话）。
+- 只挪会话目录（JSONL 日志）；内容寻址的附件 blob 与投影缓存记录留在原地，是无害孤儿、不会被列出。
+- 界面里没有回收站浏览器，恢复靠手挪目录。
+- 仓库不含任何密钥/账号数据。
+
+## 版本与时间
+
+v0.1.0 · 2026-11-01
+
+---
+
+## 原文档（保留）
+
 Adds **删除对话… / Delete conversation…** to the Session row menu (the `...`
 menu in the workspace sidebar) and deletes the stored session.
 
