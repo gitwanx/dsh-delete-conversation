@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
-const PROFILE = "C:/Users/wang'xing/.dsh/profiles/desktop";
+const PROFILE = "%USERPROFILE%/.dsh/profiles/desktop";
 const profileRequire = createRequire(PROFILE + '/package.json');
 const React = profileRequire('react');
 
